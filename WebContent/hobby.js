@@ -17,8 +17,23 @@ function executeAjax () {
 		url : '/wt2/api/hobby',
 		dataType : 'json',
 		data : requestQuery,
-		success : function(data) {
-			console.log(data);
+		success : function(pw) {
+			console.log(pw);
+
+			var hobby ='';
+
+			for(var i = 0;i<pw.length; i++){
+				var pwhobby = pw[i];
+
+			// $('#hobbyTable').append('<tr>'+'<td>'+pwhobby.hobbyCategory+'</td>'+'</tr>');
+		 	// $('#hobbyTable').append('<td>'+pwhobby.hobby+'</td>'+'</tr>');
+				//$('#hobbyTable').append('<td>'+i+1+'</td>');
+				$('#hobbyTable').append('<tr>'+'<td>'+(i+1)+'</td>'+'<td>'+pwhobby.hobbyCategory+'</td>'+ '<td>'+pwhobby.hobby+'</td>'+ '</tr>');
+
+				//$('#hobbyTable').append('<tr>'+'</tr>');
+
+
+			}
 ////			var htmlstr = '';
 ////			for (var i = 0; i < data.length; i++) {
 ////				var item = data[i];

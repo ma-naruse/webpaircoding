@@ -1,10 +1,13 @@
 package app;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,10 +23,12 @@ public class HobbyServlet extends HttpServlet {
 	/********************************************************************************
 	 * 以下のdoGet/doPostを実装して下さい。
 	 * importなどは自由に行って下さい。
+	 * @throws IOException
 	 ********************************************************************************/
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
+		response.setContentType("text/html; charset=Windows-31J");
 		// TODO 必須機能「趣味参照機能」
 		// アクセス元のHTMLでitemCdに設定された値を取得して、String型の変数itemCdに代入
 		String shainId = request.getParameter("shainId");
@@ -47,8 +52,8 @@ public class HobbyServlet extends HttpServlet {
 
 		// 実行するSQL文
 		String sql ="select  \n" +
-				"MH.HOBBY_NAME, \n" +
-				"MC.CATEGORY_NAME \n" +
+				"MH.HOBBY_NAME mhn, \n" +
+				"MC.CATEGORY_NAME  mcn \n" +
 				"from  \n" +
 				"MS_HOBBY MH \n" +
 				",MS_CATEGORY MC \n" +
@@ -62,9 +67,11 @@ public class HobbyServlet extends HttpServlet {
 				"and MS.SYAINID = '0001' \n" +
 				" \n" +
 				"order by \n" +
-				"MH.HOBBY_ID \n" + ;
+				"MH.HOBBY_ID " ;
+		
+		
+		List <Hobby> hobbyList =  new ArrayList<>();
 
-		Item item = new Item();
 		// エラーが発生するかもしれない処理はtry-catchで囲みます
 		// この場合はDBサーバへの接続に失敗する可能性があります
 		try (
@@ -82,15 +89,11 @@ public class HobbyServlet extends HttpServlet {
 			// rs.nextは取得した商品情報表に次の行があるとき、trueになります
 			// 次の行がないときはfalseになります
 			while (rs1.next()) {
-				item.setItemCd(rs1.getString("ITEM_CD")); // Item型の変数itemに商品コードをセット
-				item.setItemName(rs1.getString("NAME"));// Item型の変数itemに商品名をセット
-				item.setItemNameKana(rs1.getString("NAME_KANA"));// Item型の変数itemに商品名カナをセット
-				item.setDescription(rs1.getString("DESCRIPTION"));// Item型の変数itemに商品説明をセット
-				item.setUrl(rs1.getString("URL"));// Item型の変数itemに画像URLをセット
-				item.setSalesPrice(rs1.getInt("SALES_PRICE"));// Item型の変数itemに販売単価をセット
-				item.setTaxType(rs1.getString("TAX_TYPE"));// Item型の変数itemに税区分をセット
-				item.setItemGroupCode(rs1.getString("ITEM_GROUP_CD"));// Item型の変数itemに商品分類コードをセット
-				item.setStock(rs1.getInt("STOCK"));//Item型の変数itemに在庫をセット
+				Hobby h1 = new Hobby();
+				h1.setHobby(rs1.getString("mhn")); // Item型の変数itemに商品コードをセット
+				h1.setHobbyCategory(rs1.getString("mcn"));// Item型の変数itemに商品名をセット
+				hobbyList.add(h1);
+				System.out.println(h1.getHobby());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("検索処理の実施中にエラーが発生しました。詳細：[%s]", e.getMessage()), e);
@@ -99,7 +102,7 @@ public class HobbyServlet extends HttpServlet {
 		// アクセスした人に応答するためのJSONを用意する
 		PrintWriter pw = response.getWriter();
 		// JSONで出力する
-		pw.append(new ObjectMapper().writeValueAsString(item));
+		pw.append(new ObjectMapper().writeValueAsString(hobbyList));
 		// -- ここまで --
 	}
 
