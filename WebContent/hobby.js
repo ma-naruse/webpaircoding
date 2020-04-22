@@ -9,7 +9,34 @@ function executeAjax () {
 	parameter = parameter.split('=')[1];
 
 	// --------------- TODO 編集ここから---------------
-
+	var requestQuery = {
+		shainId : parameter
+	};
+	$.ajax({
+		Type : 'GET',
+		url : '/wt2/api/hobby',
+		dataType : 'json',
+		data : requestQuery,
+		success : function(data) {
+			console.log(data);
+////			var htmlstr = '';
+////			for (var i = 0; i < data.length; i++) {
+////				var item = data[i];
+////				htmlstr += '<div class="grid">';
+////				htmlstr += '<div class="image" style="background-image: url('+ item.url + ')"></div>';
+////				htmlstr += '<div class="itemName">';
+////				htmlstr += '<a href="./itemDetail.html?itemCd=' + item.itemCd + '">'
+////						+ item.itemName + '</a>';
+////				htmlstr += '</div>'
+//			}
+//			$('#js-item-list').html(htmlstr);
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			// サーバーとの通信に失敗した時の処理
+			alert('データの通信に失敗しました');
+			console.log(errorThrown)
+		}
+	});
 
 
 
